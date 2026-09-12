@@ -3,32 +3,39 @@
 Single-page tutoring site, served by GitHub Pages at
 <https://adamnightingale0.github.io>.
 
+The design comes from a Claude Design canvas ("Organic" design system —
+Caprasimo headings, Figtree body, cream/terracotta/olive palette). This repo
+holds a plain static reconstruction of it: no JavaScript, no build step, no
+external requests.
+
 ## Files
 
 | File | What it is |
 | --- | --- |
 | `index.html` | The whole page — all the text lives here |
-| `assets/styles.css` | All styling; colours are set as variables at the top |
-| `assets/headshot.jpg` | Your photo (see below) |
+| `assets/styles.css` | The design system (tokens at the top) plus component classes |
+| `assets/headshot.jpg` | The hero photo |
+| `assets/fonts/*.woff2` | Caprasimo + Figtree, self-hosted so the page loads nothing from a CDN |
 
-## Two things to finish
+## One thing to finish
 
-**1. Add the headshot.** Save your photo as `assets/headshot.jpg` and commit it.
-Until that file exists the page shows an "AN" circle instead — nothing breaks.
-A square crop of roughly 600×600px or larger looks best.
-
-**2. Replace the testimonials.** In `index.html`, find the
-`<section id="testimonials">` block. Each quote is a `<blockquote class="quote">`
-with placeholder text to swap out:
+**Replace the testimonials.** In `index.html`, find
+`<section id="testimonials">`. Each quote is a `<figure>` with placeholder text
+to swap out — change the text inside `<blockquote>` and `<figcaption>`:
 
 ```html
-<blockquote class="quote">
-  <p>[Testimonial text goes here]</p>
-  <cite>[Student / parent name], [Subject &amp; level]</cite>
-</blockquote>
+<blockquote style="...">Testimonial text goes here.</blockquote>
+<figcaption style="...">Student / parent name &mdash; Subject &amp; level</figcaption>
 ```
 
-Delete or duplicate a whole `<blockquote>` block to show fewer or more.
+Delete or duplicate a whole `<figure>` block to show fewer or more.
+
+## Changing colours or type
+
+Everything visual is driven by the custom properties in the `:root` block at
+the top of `assets/styles.css` — `--color-bg`, `--color-accent`,
+`--color-accent-2`, the tonal ramps, spacing, radii and shadows. Change a token
+there and the whole page follows.
 
 ## Previewing locally
 
