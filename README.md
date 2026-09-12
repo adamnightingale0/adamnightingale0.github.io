@@ -17,18 +17,19 @@ external requests.
 | `assets/headshot.jpg` | The hero photo |
 | `assets/fonts/*.woff2` | Caprasimo + Figtree, self-hosted so the page loads nothing from a CDN |
 
-## One thing to finish
+## Adding a testimonial
 
-**Replace the testimonials.** In `index.html`, find
-`<section id="testimonials">`. Each quote is a `<figure>` with placeholder text
-to swap out — change the text inside `<blockquote>` and `<figcaption>`:
+In `index.html`, find `<section id="testimonials">`. Each quote is a `<figure>`.
+Copy a whole `<figure>` block and swap the two pieces of text:
 
 ```html
-<blockquote style="...">Testimonial text goes here.</blockquote>
-<figcaption style="...">Student / parent name &mdash; Subject &amp; level</figcaption>
+<blockquote style="...">The quote, without surrounding quote marks.</blockquote>
+<figcaption style="...">Name, parent &mdash; Subject &amp; level</figcaption>
 ```
 
-Delete or duplicate a whole `<figure>` block to show fewer or more.
+Leave out the opening and closing quote marks — the card draws its own large
+`&ldquo;` above the text. The cards flow into columns on their own as you add
+more, so nothing else needs changing.
 
 ## Changing colours or type
 
