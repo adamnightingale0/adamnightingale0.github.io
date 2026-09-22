@@ -347,3 +347,90 @@ textarea.input { min-height: 90px; resize: vertical; }
   border: 1px solid var(--color-accent-2-600);
 }
 .contact-link-outline:hover { background: var(--color-accent-2-700); color: var(--color-accent-2-100); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Testimonials — a plain grid by default, upgraded to a rotating carousel by
+   assets/carousel.js. The .is-carousel class is added by that script only
+   after it has successfully taken over, so with JavaScript off (or broken)
+   every testimonial stays on the page in the grid below.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.carousel-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+  gap: 20px;
+  align-items: start;
+  justify-items: center;
+}
+
+.testimonial {
+  background: var(--color-neutral-100);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  max-width: 540px;
+}
+.testimonial-mark {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 40px; line-height: 0.6; color: var(--color-accent-400);
+}
+.testimonial-quote {
+  margin: 0; max-width: 62ch;
+  font-size: 17px; line-height: 1.65; color: var(--color-neutral-800);
+}
+.testimonial-quote p { margin: 0 0 14px; }
+.testimonial-quote p:last-child { margin-bottom: 0; }
+.testimonial-attr {
+  margin: 0; font-size: 14px; font-weight: 700; color: var(--color-neutral-700);
+}
+
+/* — carousel mode — */
+.carousel.is-carousel .carousel-track {
+  display: block; position: relative; overflow: hidden;
+  height: 0; /* carousel.js sets the real height, and animates between them */
+  transition: height 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.is-carousel .testimonial {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  max-width: 720px;
+  opacity: 0; visibility: hidden;
+  transition: opacity 420ms ease, visibility 0s linear 420ms;
+}
+.is-carousel .testimonial.is-active {
+  opacity: 1; visibility: visible;
+  transition: opacity 420ms ease, visibility 0s;
+}
+
+/* — carousel controls, built by carousel.js — */
+.carousel-controls {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--space-2); margin-top: var(--space-6);
+}
+.carousel-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; padding: 0; flex: none;
+  cursor: pointer; color: var(--color-accent-800);
+  background: transparent;
+  border: 1px solid var(--color-divider); border-radius: 999px;
+}
+.carousel-btn:hover { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+.carousel-btn:active { background: color-mix(in srgb, var(--color-accent) 20%, transparent); }
+.carousel-btn svg { width: 18px; height: 18px; display: block; }
+.carousel-dots { display: flex; align-items: center; gap: var(--space-2); margin-inline: var(--space-2); }
+.carousel-dot {
+  width: 10px; height: 10px; padding: 0; flex: none;
+  cursor: pointer; background: var(--color-accent-300);
+  border: 0; border-radius: 999px;
+  transition: background 200ms ease, transform 200ms ease;
+}
+.carousel-dot:hover { background: var(--color-accent-500); }
+.carousel-dot[aria-current='true'] { background: var(--color-accent-700); transform: scale(1.35); }
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel.is-carousel .carousel-track,
+  .is-carousel .testimonial,
+  .carousel-dot { transition: none; }
+}
