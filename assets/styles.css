@@ -342,6 +342,9 @@ textarea.input { min-height: 90px; resize: vertical; }
   font-family: var(--font-heading); font-weight: var(--font-heading-weight); font-size: 15px;
 }
 .contact-link:hover { background: #ffffff; color: var(--color-accent-2-900); }
+/* the email address is one long token: let the label wrap so the arrow stays inside the pill */
+.contact-link > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.contact-link > span:last-child { flex: none; }
 .contact-link-outline {
   background: transparent; color: var(--color-accent-2-100);
   border: 1px solid var(--color-accent-2-600);
