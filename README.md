@@ -58,9 +58,10 @@ and there are previous/next buttons, dots, and a pause button. Visitors who
 have asked their system for reduced motion get no auto-rotation at all — the
 controls still work.
 
-To change the pace, edit `AUTO_MS` at the top of `assets/carousel.js`. If you
-change the transition speed, change `TRANSITION_MS` there and the matching
-`420ms` values in the carousel block of `assets/styles.css` together.
+To change how long each quote is held, edit `AUTO_MS` at the top of
+`assets/carousel.js`. To change how fast it fades and resizes between quotes,
+edit `--carousel-speed` on `.carousel` in `assets/styles.css` — that one value
+drives both the fade and the height animation.
 
 ## Changing colours or type
 

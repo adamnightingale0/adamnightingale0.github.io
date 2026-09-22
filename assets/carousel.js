@@ -13,8 +13,9 @@
 (function () {
   'use strict';
 
-  var AUTO_MS = 7000;          /* time each quote is held before advancing */
-  var TRANSITION_MS = 420;     /* keep in step with styles.css */
+  /* How long each quote is held before advancing. The transition duration
+     lives in styles.css as --carousel-speed; nothing here needs to know it. */
+  var AUTO_MS = 7000;
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -44,7 +45,8 @@
     var index = 0;
     var timer = null;
     var stopped = reduceMotion.matches;  /* never auto-rotate under reduced motion */
-    var suspended = false;               /* hover/focus hold, separate from the button */
+    var hovering = false;                /* pointer is over the carousel */
+    var focusWithin = false;             /* keyboard focus is inside it */
 
     /* ---- controls ---------------------------------------------------- */
 
@@ -112,8 +114,10 @@
 
     /* ---- auto-rotation ------------------------------------------------ */
 
+    function suspended() { return hovering || focusWithin; }
+
     function tick() {
-      if (stopped || suspended) return;
+      if (stopped || suspended()) return;
       timer = window.setTimeout(function () { advance(1); tick(); }, AUTO_MS);
     }
 
@@ -134,20 +138,27 @@
     function stop() { stopped = true; clear(); syncPlayButton(); }
     function play() { stopped = false; clear(); tick(); syncPlayButton(); }
 
-    /* A hover or a focus holds the rotation without overriding the button:
-       moving away resumes only if the visitor had not paused it themselves. */
-    function suspend() { suspended = true; clear(); }
-    function resume() { suspended = false; if (!stopped) { clear(); tick(); } }
+    /* A hover or a focus holds the rotation without overriding the button.
+       They are tracked separately: releasing one while the other still holds
+       must not restart the rotation, and neither overrides an explicit pause. */
+    function hold() { clear(); }
+    function release() {
+      if (stopped || suspended() || document.hidden) return;
+      clear();
+      tick();
+    }
 
     playBtn.addEventListener('click', function () { if (stopped) play(); else stop(); });
     prevBtn.addEventListener('click', function () { stop(); advance(-1); });
     nextBtn.addEventListener('click', function () { stop(); advance(1); });
 
-    root.addEventListener('mouseenter', suspend);
-    root.addEventListener('mouseleave', resume);
-    root.addEventListener('focusin', suspend);
+    root.addEventListener('mouseenter', function () { hovering = true; hold(); });
+    root.addEventListener('mouseleave', function () { hovering = false; release(); });
+    root.addEventListener('focusin', function () { focusWithin = true; hold(); });
     root.addEventListener('focusout', function (e) {
-      if (!root.contains(e.relatedTarget)) resume();
+      if (root.contains(e.relatedTarget)) return;   /* moved between own controls */
+      focusWithin = false;
+      release();
     });
 
     root.addEventListener('keydown', function (e) {
@@ -175,7 +186,7 @@
     /* Rotating while the tab is hidden just burns the queue. */
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) clear();
-      else if (!stopped && !suspended) { clear(); tick(); }
+      else release();
     });
 
     reduceMotion.addEventListener('change', function (e) {
@@ -184,6 +195,10 @@
 
     /* ---- go ------------------------------------------------------------ */
 
+    /* aria-roledescription is only honoured on an element with a role, and a
+       plain div has none. group keeps it out of the landmark list, which the
+       section's own heading already covers. */
+    root.setAttribute('role', 'group');
     root.setAttribute('aria-roledescription', 'carousel');
     root.setAttribute('aria-label', 'Testimonials');
     slides.forEach(function (slide, i) {
@@ -198,7 +213,7 @@
     show(0);
     setHeight(false);        /* first paint should not animate up from zero */
     syncPlayButton();
-    if (!stopped) tick();
+    if (!stopped && !document.hidden) tick();
 
     /* Re-measure whenever the live text reflows: viewport resize, a font
        finishing loading, or an edit to the quotes. */
